@@ -624,7 +624,9 @@ $("#go").addEventListener("click", async ()=>{
       try{
         const fd=new FormData();
         fd.set("name",`${d.first||""} ${d.last||""}`.trim()); fd.set("email",d.email||""); fd.set("role",d.role||""); fd.set("start",fmtDate(d.start||""));
-        fd.set("website",$("#website").value); fd.set("pack",lastPdf,lastName); fd.set("hmrc",hmrcPdf,hmrcName);
+        fd.set("website",$("#website").value);
+        const keep=["first","last","role","start","addr","pc","addrfrom","addrhist","nat","rtwtype","share","visaexp","dbshave","dbswork","dbsbar","dbsupd","dbsno","dbsdate","r1n","r1o","r2n","r2o","gaps","dvla","pts","crim","barred"];
+        fd.set("data",JSON.stringify(Object.fromEntries(keep.filter(k=>typeof d[k]==="string"&&d[k]).map(k=>[k,String(d[k]).slice(0,1000)])))); fd.set("pack",lastPdf,lastName); fd.set("hmrc",hmrcPdf,hmrcName);
         const r=await fetch(SUBMIT_URL,{method:"POST",body:fd,mode:"cors",credentials:"omit"});
         const j=await r.json().catch(()=>({}));
         if(r.ok && j.ok){
